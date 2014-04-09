@@ -48,13 +48,15 @@ class pyGTrends(object):
         self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.cj))
         self.opener.addheaders = self.headers
         
-        galx = re.compile('<input name="GALX" type="hidden"\\s*value="(?P<galx>[a-zA-Z0-9_-]+)">')
+        #galx = re.compile('<input name="GALX" type="hidden"\\s*value="(?P<galx>[a-zA-Z0-9_-]+)">')
+        galx = re.compile('.*\\s*name="GALX"\\s*.*\\s*value="(?P<galx>[a-zA-Z0-9_-]+)">')
 
         resp = self.opener.open(self.url_ServiceLoginBoxAuth).read()
         m = galx.search(resp)
         if not m:
             raise Exception("Cannot parse GALX out of login page")
         self.login_params['GALX'] = m.group('galx')
+        print m.group('galx')
         params = urllib.urlencode(self.login_params)
         self.opener.open(self.url_ServiceLoginBoxAuth, params)
         self.opener.open(self.url_CookieCheck)
